@@ -7,6 +7,7 @@ def open_and_read_file(file_path):
     Takes a string that is a file path, opens the file, and turns
     the file's contents as one string of text.
     """
+    # opens the entire file 
 
     content = open(file_path).read() 
     return content
@@ -24,11 +25,14 @@ def make_chains(text_string):
         >>> make_chains("hi there mary hi there juanita")
         {('hi', 'there'): ['mary', 'juanita'], ('there', 'mary'): ['hi'], ('mary', 'hi': ['there']}
     """
+    
+    # splits the text into a list of strings 
     words = text_string.split()
 
 
     chains = {}
 
+    # iterates through the text and saves unique pairs of words into a dict; keeps track of the word that comes next 
     for i in range(len(words)-2):
         if (words[i], words[i+1]) in chains:
             chains[(words[i], words[i+1])].append(words[i + 2])
@@ -44,54 +48,40 @@ def make_chains(text_string):
     #     print chains
     #     print
 
+    # finds the two last words in the file to prompt the random generator to stop 
+    last_words = (words[-2], words[-1])
 
-    return chains
+    return chains, last_words
 
 
-def make_text(chains):
+def make_text(chains, last_words):
     """Takes dictionary of markov chains; returns random text."""
 
-    # Chooses a key to start at randomly 
-    starting_tuple = choice(chains.keys())  
+    # Chooses a key to start at randomly and saves it to a working tuple 
+    working_tuple = choice(chains.keys())
 
-    # Creates our list of strings that we eventually join together 
-    final_text = [starting_tuple[0], starting_tuple[1]]
-    
-    # Chooses a word randomly from the list 
-    word = choice(chains[starting_tuple])
+    # Creates our list of strings that we add the selected words to
+    final_text = list(working_tuple)
 
-    # Creates a tuple with the second word of the random key and its random value
-    working_tuple = (starting_tuple[1], word)
-
-    while working_tuple != ("the", "earth."):
+    while working_tuple != last_words:
 
         word = choice(chains[working_tuple])
         final_text.append(word)
         working_tuple = (working_tuple[1], word)
-        print working_tuple
 
+    # concatenates the words into the final text 
     return (" ").join(final_text)
 
 
-
-        #text = ""
-
-
-    # your code goes here
-
-    # return text
-
-
-input_path = "gettysburg.txt"
+input_path = "Lose_yourself.txt"
 
 #Open the file and turn it into one long string
 input_text = open_and_read_file(input_path)
 
 # Get a Markov chain
-chains = make_chains(input_text)
-
+chains, last_words = make_chains(input_text)
 
 # Produce random text
-random_text = make_text(chains)
+random_text = make_text(chains, last_words)
 
 print random_text
