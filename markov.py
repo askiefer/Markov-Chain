@@ -1,7 +1,7 @@
 from random import choice
+from sys import argv
 
-
-def open_and_read_file(file_path):
+def open_and_read_file(file_path, file_path_two):
     """Takes file path as string; returns text as string.
 
     Takes a string that is a file path, opens the file, and turns
@@ -9,9 +9,9 @@ def open_and_read_file(file_path):
     """
     # opens the entire file 
 
-    content = open(file_path).read() 
-    return content
+    content = open(file_path).read() + open(file_path_two).read()
 
+    return content
 
 def make_chains(text_string):
     """Takes input text as string; returns _dictionary_ of markov chains.
@@ -28,7 +28,6 @@ def make_chains(text_string):
     
     # splits the text into a list of strings 
     words = text_string.split()
-
 
     chains = {}
 
@@ -73,10 +72,11 @@ def make_text(chains, last_words):
     return (" ").join(final_text)
 
 
-input_path = "Lose_yourself.txt"
+input_path = argv[1] 
+input_path_two = argv[2]
 
 #Open the file and turn it into one long string
-input_text = open_and_read_file(input_path)
+input_text = open_and_read_file(input_path, input_path_two)
 
 # Get a Markov chain
 chains, last_words = make_chains(input_text)
