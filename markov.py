@@ -56,17 +56,34 @@ def make_chains(text_string):
 def make_text(chains, last_words):
     """Takes dictionary of markov chains; returns random text."""
 
-    # Chooses a key to start at randomly and saves it to a working tuple 
-    working_tuple = choice(chains.keys())
+    punct_list = [".", "!", "?"]
+    final_text = ["this", "won't", "work"]
 
-    # Creates our list of strings that we add the selected words to
-    final_text = list(working_tuple)
+    while final_text[-1][-1] not in punct_list:
 
-    while working_tuple != last_words:
+        # Chooses a key to start at randomly and saves it to a working tuple 
+        working_tuple = choice(chains.keys())
 
-        word = choice(chains[working_tuple])
-        final_text.append(word)
-        working_tuple = (working_tuple[1], word)
+        # Continues choosing a new start word if the first character is not uppercase 
+        while not working_tuple[0][0].isupper():
+            working_tuple = choice(chains.keys())
+
+        # Creates our list of strings that we add the selected words to
+        final_text = list(working_tuple)
+
+        # This counts the length of the Markov'd text, adding a space 
+        len_of_text =  len(working_tuple[0]) + len(working_tuple[1]) + 1
+
+        # continue to create new keys and add words as long as the length is less than 140 characters
+        # and the last character is not a punctuation (?,.!)
+
+        while (len_of_text <= 140 and
+               final_text[-1][-1] not in punct_list and 
+               working_tuple != last_words):  
+            word = choice(chains[working_tuple])
+            len_of_text += len(word) + 1
+            final_text.append(word)
+            working_tuple = (working_tuple[1], word)
 
     # concatenates the words into the final text 
     return (" ").join(final_text)
